@@ -1,0 +1,13 @@
+{
+    "memo": "",
+    "projects": [
+        {
+            "name": "github.com/Unknwon/com",
+            "branch": "master",
+            "revision": "28b053d5a2923b87ce8c5a08f3af779894a72758",
+            "packages": [
+                "."
+            ]
+        }
+    ]
+}

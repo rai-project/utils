@@ -1,0 +1,4 @@
+package: github.com/rai-project/utils
+import:
+- package: github.com/Unknwon/com
+  version: ~1.0.0
