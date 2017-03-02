@@ -7,9 +7,18 @@ import (
 	"encoding/base64"
 	"errors"
 	"io"
+	"strings"
+)
+
+var (
+	KeyLength = 32
+	KeyBuffer = []byte(strings.Repeat("=", 32))
 )
 
 func Encrypt(key, text []byte) ([]byte, error) {
+	if len(key) != KeyLength {
+		key = append(key, KeyBuffer[:KeyLength-len(key)]...)
+	}
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
@@ -26,6 +35,9 @@ func Encrypt(key, text []byte) ([]byte, error) {
 }
 
 func Decrypt(key, text []byte) ([]byte, error) {
+	if len(key) != KeyLength {
+		key = append(key, KeyBuffer[:KeyLength-len(key)]...)
+	}
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
