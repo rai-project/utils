@@ -14,6 +14,8 @@ func TestCrypto(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotEmpty(t, secrettext)
 
+	// pp.Println(base64.StdEncoding.EncodeToString(secrettext))
+
 	pt, err := Decrypt(key, secrettext)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, pt)
