@@ -15,6 +15,22 @@ var (
 	KeyBuffer = []byte(strings.Repeat("=", 32))
 )
 
+func EncryptStringBase64(key, text string) (string, error) {
+	e, err := EncryptString(key, text)
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString([]byte(e)), nil
+}
+
+func EncryptString(key, text string) (string, error) {
+	b, err := Encrypt([]byte(key), []byte(text))
+	if err != nil {
+		return "", err
+	}
+	return string(b), nil
+}
+
 func Encrypt(key, text []byte) ([]byte, error) {
 	if len(key) != KeyLength {
 		key = append(key, KeyBuffer[:KeyLength-len(key)]...)
@@ -32,6 +48,27 @@ func Encrypt(key, text []byte) ([]byte, error) {
 	cfb := cipher.NewCFBEncrypter(block, iv)
 	cfb.XORKeyStream(ciphertext[aes.BlockSize:], []byte(b))
 	return ciphertext, nil
+}
+
+func DecryptStringBase64(key, text string) (string, error) {
+	s, err := base64.StdEncoding.DecodeString(text)
+	if err != nil {
+		s = []byte(text)
+	}
+
+	b, err := Decrypt([]byte(key), s)
+	if err != nil {
+		return "", err
+	}
+	return string(b), nil
+}
+
+func DecryptString(key, text string) (string, error) {
+	b, err := Decrypt([]byte(key), []byte(text))
+	if err != nil {
+		return "", err
+	}
+	return string(b), nil
 }
 
 func Decrypt(key, text []byte) ([]byte, error) {
