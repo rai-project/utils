@@ -6,14 +6,24 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"io"
 	"strings"
 )
 
 var (
-	KeyLength = 32
-	KeyBuffer = []byte(strings.Repeat("=", 32))
+	KeyLength    = 32
+	CryptoHeader = fmt.Sprintf("==AES%d==", KeyLength)
+	KeyBuffer    = []byte(strings.Repeat("=", 32))
 )
+
+func IsEncryptedString(s string) bool {
+	return strings.HasPrefix(s, CryptoHeader)
+}
+
+func IsEncrypted(b []byte) bool {
+	return IsEncryptedString(string(b))
+}
 
 func EncryptStringBase64(key, text string) (string, error) {
 	e, err := EncryptString(key, text)
@@ -47,7 +57,15 @@ func Encrypt(key, text []byte) ([]byte, error) {
 	}
 	cfb := cipher.NewCFBEncrypter(block, iv)
 	cfb.XORKeyStream(ciphertext[aes.BlockSize:], []byte(b))
-	return ciphertext, nil
+	return addCryptoHeader(ciphertext), nil
+}
+
+func removeCryptoHeader(b []byte) []byte {
+	return []byte(strings.TrimPrefix(string(b), CryptoHeader))
+}
+
+func addCryptoHeader(b []byte) []byte {
+	return append([]byte(CryptoHeader), b...)
 }
 
 func DecryptStringBase64(key, text string) (string, error) {
@@ -79,6 +97,7 @@ func Decrypt(key, text []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	text = removeCryptoHeader(text)
 	if len(text) < aes.BlockSize {
 		return nil, errors.New("ciphertext too short")
 	}
