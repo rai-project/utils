@@ -69,9 +69,10 @@ func addCryptoHeader(b []byte) []byte {
 }
 
 func DecryptStringBase64(key, text string) (string, error) {
-	s, err := base64.StdEncoding.DecodeString(text)
+	q := removeCryptoHeader([]byte(text))
+	s, err := base64.StdEncoding.DecodeString(string(q))
 	if err != nil {
-		s = []byte(text)
+		s = q
 	}
 
 	b, err := Decrypt([]byte(key), s)
