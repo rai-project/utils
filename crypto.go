@@ -30,7 +30,7 @@ func EncryptStringBase64(key, text string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return base64.StdEncoding.EncodeToString([]byte(e)), nil
+	return addCryptoHeaderS(base64.StdEncoding.EncodeToString([]byte(e))), nil
 }
 
 func EncryptString(key, text string) (string, error) {
@@ -61,11 +61,19 @@ func Encrypt(key, text []byte) ([]byte, error) {
 }
 
 func removeCryptoHeader(b []byte) []byte {
-	return []byte(strings.TrimPrefix(string(b), CryptoHeader))
+	return []byte(removeCryptoHeaderS(string(b)))
+}
+
+func removeCryptoHeaderS(b string) string {
+	return strings.TrimPrefix(string(b), CryptoHeader)
 }
 
 func addCryptoHeader(b []byte) []byte {
 	return append([]byte(CryptoHeader), b...)
+}
+
+func addCryptoHeaderS(b string) string {
+	return CryptoHeader + b
 }
 
 func DecryptStringBase64(key, text string) (string, error) {

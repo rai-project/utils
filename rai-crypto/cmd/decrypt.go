@@ -20,7 +20,7 @@ var decryptCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		fmt.Println(val)
+		fmt.Print(val)
 		return nil
 	},
 }
