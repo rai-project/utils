@@ -95,8 +95,8 @@ func GetExternalIp() (string, error) {
 	return "", errors.New("Cannot get external ip")
 }
 
-// GetLocalIP returns the non loopback local IP of the host
-func GetLocalIP0() (string, error) {
+// GetLocalIp returns the non loopback local IP of the host
+func GetLocalIp() (string, error) {
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
 		return "", errors.New("Cannot get a list of network interfaces")
@@ -112,7 +112,7 @@ func GetLocalIP0() (string, error) {
 	return "", errors.New("Cannot get local ip address")
 }
 
-func GetLocalIp() (string, error) {
+func GetLocalIP0() (string, error) {
 	host, err := os.Hostname()
 	if err != nil {
 		return "", err
