@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"unsafe"
 
 	"github.com/pkg/errors"
 )
@@ -17,10 +18,16 @@ type shasumTy struct{}
 
 var SHASum = shasumTy{}
 
-func (shasumTy) Check(reader io.Reader, expected string) (bool, error) {
+func readerAsString(reader io.Reader) string {
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(reader)
-	in := buf.String()
+	b := buf.Bytes()
+	s := *(*string)(unsafe.Pointer(&b))
+	return s
+}
+
+func (shasumTy) Check(reader io.Reader, expected string) (bool, error) {
+	in := readerAsString(reader)
 
 	hash, size, _ := splitSum(expected)
 
