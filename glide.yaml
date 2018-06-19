@@ -10,7 +10,6 @@ import:
   version: master
   subpackages:
   - doc
-testImport:
 - package: github.com/stretchr/testify
   subpackages:
   - assert
