@@ -15,8 +15,10 @@ import (
 )
 
 var (
-	hostIp string
-	once   sync.Once
+	hostIp         string
+	externalIp     string
+	onceHostIp     sync.Once
+	onceExternalIp sync.Once
 )
 
 func isLinuxSubsystem() bool {
@@ -58,7 +60,7 @@ func getHostIP() string {
 }
 
 func GetHostIP() string {
-	once.Do(func() {
+	onceHostIp.Do(func() {
 		hostIp = getHostIP()
 	})
 	return hostIp
@@ -79,7 +81,7 @@ func getExternalIpFrom(service string) (string, error) {
 	return string(bytes.TrimSpace(buf)), nil
 }
 
-func GetExternalIp() (string, error) {
+func iGetExternalIp() (string, error) {
 	services := []string{
 		"http://checkip.amazonaws.com",
 		"http://myexternalip.com/raw",
@@ -93,6 +95,20 @@ func GetExternalIp() (string, error) {
 		}
 	}
 	return "", errors.New("Cannot get external ip")
+}
+
+func GetExternalIp() (string, error) {
+	onceExternalIp.Do(func() {
+		var err error
+		externalIp, err = iGetExternalIp()
+		if err != nil {
+			externalIp = ""
+		}
+	})
+	if externalIp == "" {
+		return "", errors.New("unable to get external ip")
+	}
+	return externalIp, nil
 }
 
 // GetLocalIp returns the non loopback local IP of the host
