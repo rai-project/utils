@@ -56,20 +56,3 @@ func Flatten2DFloat32(f interface{}) [][]float32 {
 
 	return nil
 }
-
-// DOES NOT WORK
-func Flatten(f interface{}) []interface{} {
-
-	output := []interface{}{}
-
-	switch e := f.(type) {
-	case []interface{}:
-		for _, v := range e {
-			output = append(output, Flatten(v)...)
-		}
-	case interface{}:
-		output = append(output, e)
-	}
-
-	return output
-}
