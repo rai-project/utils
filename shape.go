@@ -1,6 +1,6 @@
 package utils
 
-import "github.com/tinygo-org/tinygo/src/reflect"
+import "reflect"
 
 func numElements(shape []int64) int64 {
 	n := int64(1)
